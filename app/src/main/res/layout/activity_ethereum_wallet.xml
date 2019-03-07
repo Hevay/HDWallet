@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ethereumWallet.EthereumWalletActivity">
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Address: " />
+
+        <TextView
+            android:id="@+id/address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="以太坊钱包地址"
+            android:textColor="@android:color/black" />
+
+        <ImageView
+            android:id="@+id/qr_code"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@android:color/white"
+            android:contentDescription="扫描二维码，获取以太坊钱包地址"
+            android:padding="8dp"
+            android:scaleType="fitXY" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Balance" />
+
+        <TextView
+            android:id="@+id/balance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="0.00eth" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="转入eth的账户地址： " />
+
+        <EditText
+            android:id="@+id/to_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="请输入你要转入的账户地址 " />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="金额: " />
+
+        <EditText
+            android:id="@+id/amount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="请输入你要转账的金额" />
+
+        <Button
+            android:onClick="onSendEth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="转账ETH"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Token  Balance: "/>
+
+        <TextView
+            android:id="@+id/token_balance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="转入Token的账户地址"/>
+
+        <EditText
+            android:id="@+id/token_to_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="请输入你要转入Token的账户地址"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="转入Token的数量"/>
+
+        <EditText
+            android:id="@+id/token_amount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="请输入你要转入的Token数量"/>
+
+        <Button
+            android:onClick="onSendToken"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="转账Token"/>
+
+    </LinearLayout>
+
+</ScrollView>

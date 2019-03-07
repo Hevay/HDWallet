@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/export_mnemonics"
+        android:title="导出助记词"/>
+
+    <item
+        android:id="@+id/export_keystore"
+        android:title="导出KeyStore"/>
+
+    <item
+        android:id="@+id/export_private_key"
+        android:title="导出私钥"/>
+
+</menu>
