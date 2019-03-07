@@ -1,5 +1,6 @@
 package com.vx.hdwallet.ethereumWallet;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
@@ -7,14 +8,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableList;
 import com.vx.hdwallet.config.Constants;
@@ -56,9 +57,6 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Collections;
@@ -101,7 +99,7 @@ public class EthereumWalletActivity extends AppCompatActivity {
         //初始化各控件
         initView();
         //加载钱包， 异步执行
-        //AsyncTask.execute(loadWallet);
+        AsyncTask.execute(loadWallet);
     }
 
     private void initView() {
@@ -116,6 +114,43 @@ public class EthereumWalletActivity extends AppCompatActivity {
         mTokenAmount = findViewById(R.id.token_amount);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.eth_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        try {
+            switch (item.getItemId()) {
+                case R.id.export_keystore:
+                    Intent keystoreIntent = new Intent(this, KeyStoreActivity.class);
+                    keystoreIntent.putExtra("keystore", objectMapper.writeValueAsString(walletFile));
+                    startActivity(keystoreIntent);
+                    break;
+
+                case R.id.export_private_key:
+
+                    ECKeyPair ecKeyPair = Wallet.decrypt(PASSWORD, walletFile);
+                    BigInteger privateKey = ecKeyPair.getPrivateKey();
+                    String exportKey = Numeric.toHexStringNoPrefixZeroPadded(privateKey, Keys.PRIVATE_KEY_LENGTH_IN_HEX);
+
+                    Intent privateKeyIntent = new Intent(this, PrivateKeyActivity.class);
+                    privateKeyIntent.putExtra("pk", exportKey);
+                    startActivity(privateKeyIntent);
+                    break;
+
+                case R.id.export_mnemonics:
+                    Intent mnemonicIntent = new Intent(this, MnemonicActivity.class);
+                    startActivity(mnemonicIntent);
+                    break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     //加载钱包的异步线程
     //没有使用助记词，生成的是非确定性钱包
@@ -142,19 +177,7 @@ public class EthereumWalletActivity extends AppCompatActivity {
                     walletFile = objectMapper.readValue(file, WalletFile.class);
                 }
                 Log.d(TAG, "run:  钱包的地址是:  0x" + walletFile.getAddress());
-            } catch (InvalidAlgorithmParameterException e) {
-                e.printStackTrace();
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            } catch (NoSuchProviderException e) {
-                e.printStackTrace();
-            } catch (CipherException e) {
-                e.printStackTrace();
-            } catch (JsonGenerationException e) {
-                e.printStackTrace();
-            } catch (JsonMappingException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -316,9 +339,7 @@ public class EthereumWalletActivity extends AppCompatActivity {
 
                         //刷新eth余额
                         loadBalance();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (CipherException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -386,13 +407,7 @@ public class EthereumWalletActivity extends AppCompatActivity {
 
                     //刷新Token余额
                     loadTokenBalance();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (CipherException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -436,16 +451,9 @@ public class EthereumWalletActivity extends AppCompatActivity {
             ECKeyPair ecKeyPair = ECKeyPair.create(privKeyBytes);
             //根据密码和密钥对创建钱包,  将创建出来的钱包对象赋值给本地变量
             walletFile = Wallet.createLight(PASSWORD, ecKeyPair);
-        } catch (MnemonicException.MnemonicLengthException e) {
-            e.printStackTrace();
-        } catch (MnemonicException.MnemonicChecksumException e) {
-            e.printStackTrace();
-        } catch (MnemonicException.MnemonicWordException e) {
-            e.printStackTrace();
-        } catch (CipherException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
 }
-

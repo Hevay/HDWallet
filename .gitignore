@@ -66,6 +66,7 @@ fastlane/readme.md
 
 *.iml
 .gradle
+.idea
 /local.properties
 /.idea/libraries
 /.idea/modules.xml

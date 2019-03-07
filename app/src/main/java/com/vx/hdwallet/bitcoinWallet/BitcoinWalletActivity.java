@@ -35,11 +35,9 @@ import org.bitcoinj.crypto.DeterministicHierarchy;
 import org.bitcoinj.crypto.DeterministicKey;
 import org.bitcoinj.crypto.HDKeyDerivation;
 import org.bitcoinj.crypto.MnemonicCode;
-import org.bitcoinj.crypto.MnemonicException;
 import org.bitcoinj.net.discovery.MultiplexingDiscovery;
 import org.bitcoinj.net.discovery.PeerDiscovery;
 import org.bitcoinj.net.discovery.PeerDiscoveryException;
-import org.bitcoinj.store.BlockStoreException;
 import org.bitcoinj.store.SPVBlockStore;
 import org.bitcoinj.uri.BitcoinURI;
 import org.bitcoinj.utils.MonetaryFormat;
@@ -47,7 +45,6 @@ import org.bitcoinj.wallet.DeterministicKeyChain;
 import org.bitcoinj.wallet.DeterministicSeed;
 import org.bitcoinj.wallet.KeyChain;
 import org.bitcoinj.wallet.SendRequest;
-import org.bitcoinj.wallet.UnreadableWalletException;
 import org.bitcoinj.wallet.Wallet;
 import org.bitcoinj.wallet.WalletFiles;
 import org.bitcoinj.wallet.WalletProtobufSerializer;
@@ -55,8 +52,6 @@ import org.bitcoinj.wallet.listeners.WalletCoinsReceivedEventListener;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.net.InetSocketAddress;
@@ -154,14 +149,9 @@ public class BitcoinWalletActivity extends AppCompatActivity {
                 WalletFiles walletFiles = wallet.autosaveToFile(file, 3 * 1000, TimeUnit.MILLISECONDS, null);
                 //保存钱包文件
                 walletFiles.saveNow();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (UnreadableWalletException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-
             //更新UI界面
             runOnUiThread(new Runnable() {
                 @Override
@@ -226,13 +216,12 @@ public class BitcoinWalletActivity extends AppCompatActivity {
 
             //开始同步,探索节点并连接
             //peerGroup.start();//同步,耗时操作,线程会卡住
+
             peerGroup.startAsync();//异步
 
             //同步下载区块链数据
             peerGroup.startBlockChainDownload(null);
-        } catch (BlockStoreException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -365,14 +354,9 @@ public class BitcoinWalletActivity extends AppCompatActivity {
             BigInteger privKey = deterministicKey.getPrivKey();
             Log.d(TAG, "generateDeterministicKey: " + privKey.toString());
 
-        } catch (MnemonicException.MnemonicLengthException e) {
-            e.printStackTrace();
-        } catch (MnemonicException.MnemonicChecksumException e) {
-            e.printStackTrace();
-        } catch (MnemonicException.MnemonicWordException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
 }
